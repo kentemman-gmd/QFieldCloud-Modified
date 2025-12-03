@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from qfieldcloud.core.views import (
     collaborators_views,
     deltas_views,
+    invitations_views,
     jobs_views,
     members_views,
     package_views,
@@ -83,6 +84,7 @@ urlpatterns = [
         deltas_views.ListDeltasByDeltafileView.as_view(),
     ),
     path("deltas/apply/<uuid:projectid>/", deltas_views.ApplyView.as_view()),
+    path("invitations/", invitations_views.InviteUserView.as_view()),
     path(
         "organizations/<str:organization_name>/teams/",
         teams_views.TeamListCreateView.as_view(),
