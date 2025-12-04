@@ -70,6 +70,10 @@ class LayerSerializer(serializers.Serializer):
     error_summary = serializers.CharField(required=False)
 
 
+class InvitationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField()
     user_role = serializers.CharField(read_only=True)
