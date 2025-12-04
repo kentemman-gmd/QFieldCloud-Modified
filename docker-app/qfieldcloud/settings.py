@@ -60,6 +60,24 @@ ENVIRONMENT = os.environ.get("ENVIRONMENT")
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
+# CSRF trusted origins configuration.
+# Accepts a space-separated list of origins in the `DJANGO_CSRF_TRUSTED_ORIGINS` env var.
+# Additionally, builds HTTPS/HTTP origins from `QFIELDCLOUD_HOST` so requests coming from
+# the configured host do not fail CSRF origin checks.
+csrf_origins = [o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(" ") if o]
+if QFIELDCLOUD_HOST:
+    if QFIELDCLOUD_HOST.startswith(("http://", "https://")):
+        csrf_origins.append(QFIELDCLOUD_HOST)
+    else:
+        csrf_origins.extend(
+            [
+                f"https://{QFIELDCLOUD_HOST}",
+                f"http://{QFIELDCLOUD_HOST}",
+            ]
+        )
+
+CSRF_TRUSTED_ORIGINS = sorted(set(csrf_origins))
+
 # A tuple representing an HTTP header/value combination that signifies a request is secure, which is important for Django’s CSRF protection.
 # We need to set it in QFieldCloud as we run behind a proxy.
 # Read more: https://docs.djangoproject.com/en/4.2/ref/settings/#secure-proxy-ssl-header
